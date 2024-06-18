@@ -15,20 +15,5 @@ jobs:
         run: |
           echo "Your build/test commands"
 
-      - name: Trigger Deployment
-        uses: actions/github-script@0.6.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
-            const deployWorkflow = workflows.find(workflow => workflow.name === 'Release');
-            await github.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: deployWorkflow.id,
-              ref: 'main',
-              inputs: {
-                environment: 'production' // Customize as needed
-              }
-            });
+      - run: |
+          gh workflow dispatch -y release.yml -i environment=develop
