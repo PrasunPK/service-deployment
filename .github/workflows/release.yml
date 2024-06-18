@@ -1,9 +1,10 @@
-name: "release"
+name: release
 
 on:
   workflow_run:
     workflows: [Build]
     types: [completed]
+    branches: [main]
 
 jobs:
   deploy:
