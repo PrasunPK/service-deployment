@@ -16,4 +16,4 @@ jobs:
           echo "Your build/test commands"
 
       - run: |
-          gh workflow dispatch -y release.yml -i environment=develop
+          gh workflow dispatch release.yml -f environment=develop
