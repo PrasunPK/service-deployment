@@ -1,15 +1,34 @@
-name: build
-
+name: Main
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-java@v4.2.1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build and Test
+        run: |
+          echo "Your build/test commands"
+
+      - name: Trigger Deployment
+        uses: actions/github-script@0.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          java-version: 21
-          distribution: 'zulu'
-      - run: "echo build"
+          script: |
+            const { data: workflows } = await github.actions.listRepoWorkflows({ owner: context.repo.owner, repo: context.repo.repo });
+            const deployWorkflow = workflows.find(workflow => workflow.name === 'Release');
+            await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: deployWorkflow.id,
+              ref: 'main',
+              inputs: {
+                environment: 'production' // Customize as needed
+              }
+            });
