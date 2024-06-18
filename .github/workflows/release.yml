@@ -1,27 +1,21 @@
-name: Deploy Workflow
+name: Release
 on:
-  push:
-    branches:
-      - main   # Replace with your branch name
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'develop'
 
 jobs:
-  check_approval:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if approval is required
-        id: check_approval
-        run: echo "::set-output name=approval_required::true"
-
   deploy:
-    needs: check_approval
     runs-on: ubuntu-latest
-    if: ${{ needs.check_approval.outputs.approval_required == 'true' && github.event_name == 'workflow_dispatch' }}
+    environment: develop
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Deploy to Production
+      
+      - name: Deploy to ${{ github.event.inputs.environment }}
         run: |
-          # Your deployment steps
-
+          echo "Deployment"
