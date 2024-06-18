@@ -4,12 +4,13 @@ on:
     inputs:
       environment:
         description: 'Environment to deploy to'
-        required: false
-        default: 'production'
+        required: true
+        default: 'develop'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
