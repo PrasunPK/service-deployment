@@ -17,3 +17,6 @@ jobs:
         run: |
           echo "Your build/test commands"
 
+      - name: Trigger Workflow
+        uses: gh workflow run release.yml --ref main
+
